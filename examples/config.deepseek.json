@@ -1,0 +1,21 @@
+{
+  "enabled": false,
+  "pollIntervalMs": 15000,
+  "outputDir": null,
+  "dataDir": null,
+  "llm": {
+    "mode": "openai",
+    "baseURL": "https://api.deepseek.com/v1",
+    "model": "deepseek-chat",
+    "apiKeyEnv": "STUDY_LLM_API_KEY",
+    "apiKey": null,
+    "temperature": 0.4,
+    "maxTokens": 8192,
+    "timeoutMs": 180000,
+    "fallbackToOffline": true
+  },
+  "prompt": {
+    "persona": "学习笔记整理助手",
+    "goal": "日常学习与复习"
+  }
+}

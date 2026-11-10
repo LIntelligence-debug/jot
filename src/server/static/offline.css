@@ -1,0 +1,50 @@
+/* 笔记工坊 · 在共享样式之上补充的少量规则（原生控件、动作区、提示颜色） */
+
+select,
+textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 10px;
+  outline: none;
+}
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.65;
+  font-size: 13px;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.stepper {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.toast.ok {
+  background: #16a34a;
+}
+.toast.warn {
+  background: #d97706;
+}
+.toast.err {
+  background: #dc2626;
+}
+@media (prefers-color-scheme: dark) {
+  .toast.ok { background: #12301f; color: #d7f5e3; }
+  .toast.warn { background: #33270f; color: #ffe6bd; }
+  .toast.err { background: #351a1a; color: #ffd9d9; }
+}

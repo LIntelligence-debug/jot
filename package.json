@@ -1,0 +1,49 @@
+{
+  "name": "jot",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Jot（笔记工坊）· 离线优先的学习笔记助手：把视频课、教程、讲座、读书、播客等学习内容的标题与文字材料整理成按学科归档的 Markdown 与 Word 笔记；默认完全离线，可选接入任意大模型 API（OpenAI/Anthropic 兼容，含 Ollama、LM Studio）。",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "src/index.mjs",
+  "bin": {
+    "jot": "src/cli.mjs"
+  },
+  "files": [
+    "src",
+    "config/config.example.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node src/cli.mjs serve",
+    "dev": "node src/cli.mjs serve --no-open",
+    "test": "node --test",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "keywords": [
+    "offline",
+    "study",
+    "notes",
+    "course",
+    "markdown",
+    "docx",
+    "word",
+    "llm",
+    "ollama",
+    "openai",
+    "local-first",
+    "chinese"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LIntelligence-debug/jot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LIntelligence-debug/jot/issues"
+  },
+  "homepage": "https://github.com/LIntelligence-debug/jot#readme"
+}

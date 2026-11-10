@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jot 笔记工坊 · 学习笔记</title>
+  <link rel="icon" href="/static/favicon.ico">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/offline.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">笔</div>
+        <div class="brand-text">
+          <h1>笔记工坊</h1>
+          <p>Jot · 本地学习笔记 · 离线优先 · 可选接入大模型</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="statusPill" class="pill paused"><i></i><span id="statusText">连接中…</span></span>
+        <label class="switch" id="enabledWrap" title="启动 / 暂停自动检测（仅 Windows 可用）">
+          <input id="enabledToggle" type="checkbox" aria-label="启动或暂停自动检测">
+          <span class="slider"></span>
+        </label>
+        <button id="btnScan" class="btn primary">立即扫描</button>
+        <button id="btnImport" class="btn ghost">导入文本</button>
+        <button id="btnSettings" class="btn ghost">设置</button>
+        <button id="btnShutdown" class="btn danger-ghost">退出</button>
+      </div>
+    </header>
+
+    <div id="modeBanner" class="banner hidden"></div>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="card">
+          <div class="card-head"><h2>自动检测</h2><span id="watchBadge" class="tag">--</span></div>
+          <div class="field">
+            <label for="intervalInput">间隔（秒）</label>
+            <div class="input-row">
+              <input id="intervalInput" type="number" min="3" max="300" step="1" value="15">
+              <button id="btnApplyInterval" class="btn small">应用</button>
+            </div>
+          </div>
+          <div class="presets">
+            <button data-interval="5">5s</button>
+            <button data-interval="10">10s</button>
+            <button data-interval="15">15s</button>
+            <button data-interval="30">30s</button>
+            <button data-interval="60">60s</button>
+          </div>
+          <div class="meta"><span>下次检测</span><b id="countdown">--</b></div>
+          <div class="meta"><span>最近检测</span><b id="lastTick">--</b></div>
+          <div id="watchHint" class="hint hidden">当前系统不支持自动读取前台窗口，请用「立即扫描」或「导入文本」。</div>
+          <button id="btnPoll" class="btn ghost small block">单步检测</button>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>当前窗口</h2><span id="procBadge" class="tag">--</span></div>
+          <div id="fgTitle" class="fg-title">等待浏览器 / 播放器窗口…</div>
+          <div id="fgClean" class="muted">Windows 下切到学习页面会自动识别</div>
+          <div class="meta"><span>判定</span><b id="decision">--</b></div>
+          <div class="meta"><span>稳定次数</span><b id="stableCount">0 / 2</b></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>学科</h2><span id="statSubjects" class="tag">0</span></div>
+          <div id="subjectList" class="subject-list"></div>
+          <div class="meta"><span>已整理</span><b><span id="statVideos">0</span> 集</b></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>操作</h2></div>
+          <button id="btnRebuild" class="btn ghost small block">重建全部 Word</button>
+          <button id="btnOpenDir" class="btn ghost small block">打开输出目录</button>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>生成方式</h2></div>
+          <div class="meta"><span>模式</span><b id="llmMode">--</b></div>
+          <div class="meta"><span>模型</span><b id="llmModel">--</b></div>
+          <div class="meta"><span>鉴权</span><b id="llmAuth">--</b></div>
+          <button id="btnTestLlm" class="btn ghost small block">测试连接</button>
+          <div class="hint">离线模式不发起任何网络请求；填写 API 环境变量后可接入本地或云端模型。</div>
+        </section>
+      </aside>
+
+      <section class="content">
+        <section class="card processing">
+          <div class="card-head">
+            <h2>正在处理</h2>
+            <span id="stageBadge" class="tag">空闲</span>
+          </div>
+          <div id="stageTitle" class="stage-title">等待检测到新内容…</div>
+          <div id="stageMessage" class="muted">点击「立即扫描」或「导入文本」开始整理笔记。</div>
+          <ol id="stepper" class="stepper">
+            <li data-stage="classify"><i></i><span>分类</span></li>
+            <li data-stage="summarize"><i></i><span>摘要</span></li>
+            <li data-stage="write"><i></i><span>写文档</span></li>
+            <li data-stage="done"><i></i><span>完成</span></li>
+          </ol>
+        </section>
+
+        <section class="card summary">
+          <div class="card-head">
+            <h2>最新总结</h2>
+            <div class="head-actions">
+              <button id="btnOpenLatest" class="btn ghost small">打开最新笔记</button>
+              <button id="btnRefresh" class="btn ghost small">刷新</button>
+            </div>
+          </div>
+          <div id="summaryMeta" class="summary-meta"></div>
+          <div id="summaryBody" class="summary-body empty">还没有生成笔记。点「导入文本」粘贴学习材料（字幕/讲义/笔记），离线也能生成笔记。</div>
+        </section>
+
+        <section class="card history">
+          <div class="card-head"><h2>历史记录</h2><span id="historyCount" class="tag">0</span></div>
+          <div id="historyList" class="history-list"><div class="muted">暂无记录</div></div>
+        </section>
+
+        <section class="card logs">
+          <div class="card-head"><h2>实时日志</h2><button id="btnClearLogs" class="btn ghost small">清空</button></div>
+          <div id="logList" class="log-list"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>设置</h3>
+        <button id="btnCloseSettings" class="icon-btn" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="setMode">生成方式</label>
+          <select id="setMode">
+            <option value="offline">离线模板引擎（不联网，永远可用）</option>
+            <option value="openai">OpenAI 兼容接口（Ollama / LM Studio / DeepSeek / vLLM）</option>
+            <option value="anthropic">Anthropic 兼容接口（DeepSeek Anthropic 端点等）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="setBaseURL">Base URL</label>
+          <input id="setBaseURL" type="text" placeholder="http://127.0.0.1:11434/v1">
+        </div>
+        <div class="field">
+          <label for="setModel">模型名</label>
+          <div class="input-row">
+            <input id="setModel" type="text" placeholder="qwen2.5:7b">
+            <button id="btnLoadModels" class="btn small ghost">拉取列表</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="setApiKeyEnv">API Key 环境变量名</label>
+          <input id="setApiKeyEnv" type="text" placeholder="STUDY_LLM_API_KEY">
+        </div>
+        <div class="field">
+          <label for="setOutputDir">输出目录（只读）</label>
+          <div id="setOutputDir" class="readonly"></div>
+        </div>
+        <div class="hint">密钥只从环境变量读取，不写进配置文件。切换到模型后，若调用失败会自动回退离线引擎，笔记不会丢。</div>
+      </div>
+      <div class="modal-foot">
+        <button id="btnCancelSettings" class="btn ghost">取消</button>
+        <button id="btnSaveSettings" class="btn primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="importModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card wide">
+      <div class="modal-head">
+        <h3>导入学习材料</h3>
+        <button id="btnCloseImport" class="icon-btn" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="importTitle">内容标题</label>
+          <input id="importTitle" type="text" placeholder="例如：高等数学 第一章 函数与极限">
+        </div>
+        <div class="field">
+          <label for="importText">字幕 / 简介 / 笔记（可留空，留空则生成学习框架笔记）</label>
+          <textarea id="importText" rows="12" placeholder="把学习材料（字幕、讲义或自己的笔记）粘贴到这里。离线引擎会从中抽取知识点；接入大模型后由模型整理。"></textarea>
+        </div>
+        <div class="hint">仅本机处理：文本不会上传到任何地方（离线模式完全不出网）。</div>
+      </div>
+      <div class="modal-foot">
+        <button id="btnCancelImport" class="btn ghost">取消</button>
+        <button id="btnStartImport" class="btn primary">生成笔记</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mdModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card wide">
+      <div class="modal-head">
+        <h3 id="mdTitle">Markdown</h3>
+        <button id="btnCloseMd" class="icon-btn" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-body">
+        <pre id="mdBody" class="md-body"></pre>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

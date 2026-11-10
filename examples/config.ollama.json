@@ -1,0 +1,21 @@
+{
+  "enabled": false,
+  "pollIntervalMs": 15000,
+  "outputDir": null,
+  "dataDir": null,
+  "llm": {
+    "mode": "openai",
+    "baseURL": "http://127.0.0.1:11434/v1",
+    "model": "qwen2.5:7b",
+    "apiKeyEnv": "STUDY_LLM_API_KEY",
+    "apiKey": null,
+    "temperature": 0.5,
+    "maxTokens": 4096,
+    "timeoutMs": 180000,
+    "fallbackToOffline": true
+  },
+  "prompt": {
+    "persona": "学习笔记整理助手",
+    "goal": "日常学习与复习"
+  }
+}

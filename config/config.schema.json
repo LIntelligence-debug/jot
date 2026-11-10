@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/LIntelligence-debug/jot/main/config/config.schema.json",
+  "title": "笔记工坊配置",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "自动检测开关（仅 Windows 支持读取前台窗口；手动扫描与导入不受影响）"
+    },
+    "pollIntervalMs": { "type": "integer", "minimum": 1000, "maximum": 300000, "default": 15000 },
+    "stablePolls": { "type": "integer", "minimum": 1, "default": 2 },
+    "titleMinLen": { "type": "integer", "minimum": 1, "default": 4 },
+    "maxImportChars": { "type": "integer", "minimum": 200, "default": 20000 },
+    "outputDir": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "输出目录，留空自动用 <项目>/课程知识地图"
+    },
+    "dataDir": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "状态/日志目录，留空自动用 <项目>/data"
+    },
+    "offline": {
+      "type": "object",
+      "description": "离线摘要引擎的可选调参",
+      "additionalProperties": false,
+      "properties": {
+        "maxTextChars": { "type": "integer", "minimum": 2000, "maximum": 200000, "default": 20000 },
+        "maxPoints": { "type": "integer", "minimum": 8, "maximum": 20, "default": 20 },
+        "maxKeyTerms": { "type": "integer", "minimum": 4, "maximum": 10, "default": 10 }
+      }
+    },
+    "llm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "mode": { "type": "string", "enum": ["offline", "openai", "anthropic"], "default": "offline" },
+        "baseURL": { "type": "string", "format": "uri" },
+        "model": { "type": "string" },
+        "apiKeyEnv": { "type": "string", "default": "STUDY_LLM_API_KEY" },
+        "apiKey": { "type": ["string", "null"], "default": null },
+        "authHeader": { "type": "string", "description": "Anthropic 兼容模式下自定义鉴权头名，默认 x-api-key" },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+        "maxTokens": { "type": "integer", "minimum": 256 },
+        "timeoutMs": { "type": "integer", "minimum": 1000 },
+        "fallbackToOffline": { "type": "boolean", "default": true }
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "description": "提示词风格：persona=整理者角色，goal=使用场景（如「日常学习与复习」「考试复习」）",
+      "properties": {
+        "persona": { "type": "string", "default": "学习笔记整理助手" },
+        "goal": { "type": "string", "default": "日常学习与复习" }
+      }
+    },
+    "web": {
+      "type": "object",
+      "properties": {
+        "host": { "type": "string", "default": "127.0.0.1" },
+        "port": { "type": "integer", "minimum": 1024, "maximum": 65535, "default": 7870 },
+        "openBrowser": { "type": "boolean", "default": true }
+      }
+    },
+    "watch": {
+      "type": "object",
+      "properties": {
+        "browsers": { "type": "array", "items": { "type": "string" } },
+        "clients": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "subjects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "core": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "aliases": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "autoCreate": { "type": "boolean", "default": true }
+      }
+    }
+  }
+}

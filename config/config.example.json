@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LIntelligence-debug/jot/main/config/config.schema.json",
+  "version": 1,
+  "enabled": false,
+  "pollIntervalMs": 15000,
+  "stablePolls": 2,
+  "titleMinLen": 4,
+  "maxImportChars": 20000,
+  "outputDir": null,
+  "dataDir": null,
+  "llm": {
+    "mode": "offline",
+    "baseURL": "http://127.0.0.1:11434/v1",
+    "model": "qwen2.5:7b",
+    "apiKeyEnv": "STUDY_LLM_API_KEY",
+    "apiKey": null,
+    "authHeader": null,
+    "temperature": 0.7,
+    "maxTokens": 4096,
+    "timeoutMs": 120000,
+    "fallbackToOffline": true
+  },
+  "offline": {
+    "maxTextChars": 20000,
+    "maxPoints": 20,
+    "maxKeyTerms": 10
+  },
+  "prompt": {
+    "persona": "学习笔记整理助手",
+    "goal": "日常学习与复习"
+  },
+  "web": {
+    "host": "127.0.0.1",
+    "port": 7870,
+    "openBrowser": true
+  },
+  "watch": {
+    "browsers": ["chrome", "msedge", "edge", "firefox", "brave", "chromium", "vivaldi", "360chrome", "360se", "qqbrowser"],
+    "clients": ["哔哩哔哩", "bilibili", "抖音", "douyin", "快手", "kuaishou", "优酷", "youku", "爱奇艺", "iqiyi", "腾讯视频", "potplayer", "vlc", "mpv"]
+  },
+  "subjects": {
+    "core": [
+      {
+        "name": "英语",
+        "aliases": ["英语", "英文", "词汇", "单词", "语法", "阅读", "阅读理解", "完形", "翻译", "写作", "作文", "听力", "口语", "语言"]
+      },
+      {
+        "name": "数学",
+        "aliases": ["数学", "高数", "高等数学", "代数", "几何", "微积分", "导数", "微分", "极限", "积分", "不定积分", "定积分", "线性代数", "线代", "概率", "概率论", "统计", "向量", "级数"]
+      },
+      {
+        "name": "计算机基础",
+        "aliases": ["计算机基础", "计算机", "编程", "程序", "代码", "算法", "数据结构", "操作系统", "网络基础", "计算机网络", "数据库", "软件", "Office", "Word", "Excel", "PPT", "PowerPoint", "Windows", "C语言", "Python"]
+      }
+    ],
+    "autoCreate": true
+  }
+}
